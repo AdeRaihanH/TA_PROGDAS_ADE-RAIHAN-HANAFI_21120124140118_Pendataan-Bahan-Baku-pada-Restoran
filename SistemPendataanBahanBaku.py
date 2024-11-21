@@ -12,10 +12,12 @@ class MainApp:
         self.menu = {}
         self.login_page()
 
+    # Membuat page login
     def login_page(self):
         for widget in self.apk.winfo_children():
             widget.destroy()
         
+        # Memberikan gambar pada header
         gambar = Image.open("Bahan Baku.jpeg") 
         gambar = gambar.resize((700,128)) 
         gambar = gambar.filter(ImageFilter.GaussianBlur(2))
@@ -24,35 +26,44 @@ class MainApp:
         label_image.place(x=0, y=0) 
         label_image.lower() 
 
-        
+        # Memberi output tulisan
         label1 = tk.Label(self.apk, text="LOGIN PAGE",font=("Helvetica",20),bg=self.bg_color) 
         label1.place(x=270, y=175) 
         
-        self.entry_nama = tk.Entry(self.apk, font=self.font_stlye)
-        self.entry_nama.place(x=248, y=272) 
-        self.entry_password = tk.Entry(self.apk, show="*", font=self.font_stlye)
-        self.entry_password.place(x=248, y=337) 
-       
+        # Membuat close button
+        close_button = tk.Button(self.apk, text="Close", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.close_program)
+        close_button.place(x=160, y=474)
+
+        # Membuat label nama 
         label_nama = tk.Label(self.apk , text= "Name" , font=self.font_stlye, bg=self.bg_color) 
         label_nama.place(x=248,y=244) 
+        self.entry_nama = tk.Entry(self.apk, font=self.font_stlye)
+        self.entry_nama.place(x=248, y=272)
+
+        # Membuat label password 
         label_password = tk.Label(self.apk, text="Password", font=self.font_stlye, bg=self.bg_color) 
-        label_password.place(x=248,y=305) 
+        label_password.place(x=248,y=305)
+        self.entry_password = tk.Entry(self.apk, show="*", font=self.font_stlye)
+        self.entry_password.place(x=248, y=337)
         
-        Submit= tk.Button(self.apk, text="Login",font=self.font_stlye, command=self.validate_login) 
+        # Membuat submit button
+        Submit= tk.Button(self.apk, text="Login",font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.validate_login) 
         Submit.place(x=496,y=474) 
 
+    # Agar yang dapat login khusus pegawai
     def validate_login(self):
         nama = self.entry_nama.get()
         password = self.entry_password.get()
-        if nama == "1" and password == "1":
+        if nama == "pekerja" and password == "123":
             self.dashboard()
-        else:
-            messagebox.showerror("Login Failed", "Incorrect username or password")
+        
 
+    # Membuat page baru(Dashboard)
     def dashboard(self):
         for widget in self.apk.winfo_children():
             widget.destroy()
 
+        # Menambahkan gambar
         gambar = Image.open("Bahan Baku.jpeg") 
         gambar = gambar.resize((700,128)) 
         gambar = gambar.filter(ImageFilter.GaussianBlur(2))
@@ -61,59 +72,69 @@ class MainApp:
         label_image.place(x=0, y=0) 
         label_image.lower()
 
+        gambar1 = Image.open("backgroundcoklat.png")
+        gambar1 = gambar1.resize((700,128))
+        self.photo1 = ImageTk.PhotoImage(gambar1)  
+        label_image1 = tk.Label(self.apk, image = self.photo1)
+        label_image1.place(x=0, y=37) 
+        label_image1.lower()
+
+        # Memberi output tulisan
         self.apk.configure(bg=self.bg_color)
         label2 = tk.Label(apk, text="SELAMAT BEKERJA",font=("Helvetica", 20),bg=self.bg_color)
-        label2.place(x=210, y=164)
+        label2.place(x=210, y=200)
         label3 = tk.Label(apk, text="Jangan Lupa Tersenyum",font=("Helvetica", 10),bg=self.bg_color)
-        label3.place(x=260, y=195)
+        label3.place(x=265, y=230)
 
-        # Tombol
-        tambahbahan_button = tk.Button(self.apk, text="Tambah Bahan Baku", font=self.font_stlye, command=self.tambah_bahan_page)
-        tambahbahan_button.place(x=20, y=250)
-        tambahmenu_button = tk.Button(self.apk, text="Tambah Menu", font=self.font_stlye, command=self.tambah_menu_page)
-        tambahmenu_button.place(x=220, y=250)
-        masak_button = tk.Button(self.apk, text="Masak Menu", font=self.font_stlye, command=self.masak_menu_page)
-        masak_button.place(x=370, y=250)
-        logout_button = tk.Button(self.apk, text="Logout", font=self.font_stlye, command=self.logout)
-        logout_button.place(x=700, y=20)
-
+        # Membuat tombol
+        tambahbahan_button = tk.Button(self.apk, text="Tambah Bahan Baku", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.tambah_bahan_page)
+        tambahbahan_button.place(x=185, y=130)
+        tambahmenu_button = tk.Button(self.apk, text="Tambah Menu", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.tambah_menu_page)
+        tambahmenu_button.place(x=375, y=130)
+        masak_button = tk.Button(self.apk, text="Masak Menu", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.masak_menu_page)
+        masak_button.place(x=505, y=130)
+        logout_button = tk.Button(self.apk, text="Logout", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.logout)
+        logout_button.place(x=625, y=130)
+        close_button = tk.Button(self.apk, text="Close", font=self.font_stlye, bg="#261F12", fg="#8E7448", command=self.close_program)
+        close_button.place(x=20, y=500)
+        
         # Inisialisasi Treeview untuk menampilkan Tabel bahan baku
-        tk.Label(self.apk, text="Data Bahan Baku", font=("Helvetica", 16), bg="#C9A66B").place(x=20, y=300)
+        tk.Label(self.apk, text="Data Bahan Baku", font=("Helvetica", 16), bg=self.bg_color).place(x=20, y=270)
         self.bahan_tree = ttk.Treeview(self.apk, columns=("Nama Bahan", "Stok"), show="headings", height=8)
         self.bahan_tree.heading("Nama Bahan", text="Nama Bahan")
         self.bahan_tree.heading("Stok", text="Stok")
         self.bahan_tree.column("Nama Bahan", anchor="center", width=150)
         self.bahan_tree.column("Stok", anchor="center", width=100)
-        self.bahan_tree.place(x=20, y=330)
+        self.bahan_tree.place(x=20, y=300)
 
         # Inisialisasi Treeview untuk Tabel menu
-        tk.Label(self.apk, text="Data Menu", font=("Helvetica", 16), bg="#C9A66B").place(x=320, y=300)
+        tk.Label(self.apk, text="Data Menu", font=("Helvetica", 16), bg=self.bg_color).place(x=320, y=270)
         self.menu_tree = ttk.Treeview(self.apk, columns=("Nama Menu", "Bahan Baku"), show="headings", height=8)
         self.menu_tree.heading("Nama Menu", text="Nama Menu")
         self.menu_tree.heading("Bahan Baku", text="Bahan Baku")
         self.menu_tree.column("Nama Menu", anchor="center", width=150)
         self.menu_tree.column("Bahan Baku", anchor="center", width=200)
-        self.menu_tree.place(x=320, y=330)
+        self.menu_tree.place(x=320, y=300)
 
+    # Membuat fungsi agar table auto update
     def update_tables(self):
-        """Perbarui data tabel bahan baku dan menu"""
         # Tabel bahan baku
         for item in self.bahan_tree.get_children():
             self.bahan_tree.delete(item)
         for nama, stok in self.bahan_baku.items():
             self.bahan_tree.insert("", "end", values=(nama, stok))
-            if stok <= 1:  # Peringatan stok rendah
+            if stok <= 1:  # Peringatan stok sedikit
                 messagebox.showwarning("Stok Sedikit", f"Stok bahan baku {nama} hampir habis! ({stok})")
 
         # Tabel menu
         for item in self.menu_tree.get_children():
             self.menu_tree.delete(item)
         for nama_menu, bahan in self.menu.items():
-            bahan_str = ", ".join([f"{k}({v})" for k, v in bahan.items()])
+            bahan_str = ", ".join([f"{k}({v})" for k, v in bahan.items()]) #k=nama bahan, v= jumlah yang diperlukan
             self.menu_tree.insert("", "end", values=(nama_menu, bahan_str))
 
+    # Membuat halaman untuk menambah bahan baku
     def tambah_bahan_page(self):
-        """Halaman tambah bahan baku"""
         self.popup = tk.Toplevel(self.apk)
         self.popup.title("Tambah Bahan Baku")
         self.popup.geometry("400x300")
@@ -128,24 +149,24 @@ class MainApp:
 
         tk.Button(self.popup, text="Simpan", font=("Helvetica", 14), command=self.simpan_bahan).place(x=150, y=200)
 
+    # Fungsi untuk menyimpan bahan ke database
     def simpan_bahan(self):
-        """Simpan bahan baku ke database"""
-        nama = self.entry_bahan_nama.get()
+        nama = self.entry_bahan_nama.get().strip().lower()
         try:
-            stok = int(self.entry_bahan_stok.get())  # Konversi stok menjadi angka
+            stok = int(self.entry_bahan_stok.get())  # Agar stok yang dimasukan harus berbentuk angka
             if stok < 0:
                 raise ValueError("Stok tidak boleh negatif!")
             if nama in self.bahan_baku:
-                self.bahan_baku[nama] += stok  # Tambahkan ke stok yang sudah ada
+                self.bahan_baku[nama] += stok  # Menambahkan ke stok jika sudah ada stok bahan sebelumnya
             else:
-                self.bahan_baku[nama] = stok  # Tambahkan bahan baru
+                self.bahan_baku[nama] = stok  # Menambahkan bahan baku baru
             self.update_tables()
             self.popup.destroy()
         except ValueError:
             messagebox.showerror("Error", "Stok harus berupa angka positif!")
 
+    # Membuat halaman untuk menambah menu
     def tambah_menu_page(self):
-        """Halaman tambah menu"""
         self.popup = tk.Toplevel(self.apk)
         self.popup.title("Tambah Menu")
         self.popup.geometry("400x400")
@@ -160,9 +181,9 @@ class MainApp:
 
         tk.Button(self.popup, text="Simpan", font=("Helvetica", 14), command=self.simpan_menu).place(x=150, y=200)
 
+    # Fungsi untuk menyimpan menu ke database
     def simpan_menu(self):
-        """Simpan menu ke database"""
-        nama = self.entry_menu_nama.get()
+        nama = self.entry_menu_nama.get().strip().lower()
         bahan_input = self.entry_menu_bahan.get()
         try:
             bahan = {}
@@ -174,12 +195,9 @@ class MainApp:
             self.popup.destroy()
         except ValueError:
             messagebox.showerror("Error", "Jumlah bahan harus berupa angka!")
-        except Exception as e:
-            messagebox.showerror("Error", f"Format bahan salah!\n{e}")
 
-
+    # Membuat halaman untuk memasak menu
     def masak_menu_page(self):
-        """Halaman masak menu"""
         self.popup = tk.Toplevel(self.apk)
         self.popup.title("Masak Menu")
         self.popup.geometry("400x300")
@@ -190,9 +208,9 @@ class MainApp:
 
         tk.Button(self.popup, text="Masak", font=("Helvetica", 14), command=self.masak_menu).place(x=150, y=150)
 
+    # Fungsi agar mengurangi otomatis bahan jika ada menu yang dimasak
     def masak_menu(self):
-        """Kurangi stok bahan baku sesuai menu"""
-        nama_menu = self.entry_masak_menu.get()
+        nama_menu = self.entry_masak_menu.get().strip().lower()
         if nama_menu in self.menu:
             bahan_menu = self.menu[nama_menu]
             try:
@@ -205,12 +223,19 @@ class MainApp:
                 self.update_tables()
                 self.popup.destroy()
             except ValueError as e:
-                messagebox.showerror("Error", str(e))
+                messagebox.showerror("Error", "Menu tidak ditemukan!")
         else:
-            messagebox.showerror("Error", "Menu tidak ditemukan!")
+            messagebox.showerror("Error",  "Menu tidak ditemukan!")
 
+    # Fungsi agar ketika logout kembali ke homepage
     def logout(self):
         self.login_page()
+    
+    # Fungsi agar ketika button close di klik program berakhir
+    def close_program(self):
+        result = messagebox.askyesno("Konfirmasi", "Apakah Anda yakin ingin keluar?") # Mengonfirmasi pengguna
+        if result:  
+            self.apk.destroy()
 
 if __name__ == "__main__": 
     apk = tk.Tk() 
