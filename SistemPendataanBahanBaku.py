@@ -52,11 +52,13 @@ class MainApp:
 
     # Agar yang dapat login khusus pegawai
     def validate_login(self):
-        nama = self.entry_nama.get()
+        username = self.entry_nama.get()
         password = self.entry_password.get()
-        if nama == "pekerja" and password == "123":
+        if username == "pekerja" and password == "123":
             self.dashboard()
-        
+        else:
+            messagebox.showerror("Error", "Username atau password salah!")
+
 
     # Membuat page baru(Dashboard)
     def dashboard(self):
@@ -124,7 +126,7 @@ class MainApp:
         for nama, stok in self.bahan_baku.items():
             self.bahan_tree.insert("", "end", values=(nama, stok))
             if stok <= 1:  # Peringatan stok sedikit
-                messagebox.showwarning("Stok Sedikit", f"Stok bahan baku {nama} hampir habis! ({stok})")
+                messagebox.showwarning("Stok Sedikit", f"Stok bahan baku {nama} hampir habis! ({stok})") #Peringatan jika stok sedikit
 
         # Tabel menu
         for item in self.menu_tree.get_children():
@@ -139,14 +141,17 @@ class MainApp:
         self.popup.title("Tambah Bahan Baku")
         self.popup.geometry("400x300")
 
+        # Membuat label untuk nama bahan
         tk.Label(self.popup, text="Nama Bahan", font=("Helvetica", 14)).place(x=50, y=50)
         self.entry_bahan_nama = tk.Entry(self.popup, font=("Helvetica", 14))
         self.entry_bahan_nama.place(x=180, y=50)
 
+        # Membuat label untuk jumlah stok
         tk.Label(self.popup, text="Stok", font=("Helvetica", 14)).place(x=50, y=100)
         self.entry_bahan_stok = tk.Entry(self.popup, font=("Helvetica", 14))
         self.entry_bahan_stok.place(x=180, y=100)
 
+        # Membuat button simpan
         tk.Button(self.popup, text="Simpan", font=("Helvetica", 14), command=self.simpan_bahan).place(x=150, y=200)
 
     # Fungsi untuk menyimpan bahan ke database
@@ -155,7 +160,7 @@ class MainApp:
         try:
             stok = int(self.entry_bahan_stok.get())  # Agar stok yang dimasukan harus berbentuk angka
             if stok < 0:
-                raise ValueError("Stok tidak boleh negatif!")
+                raise ValueError
             if nama in self.bahan_baku:
                 self.bahan_baku[nama] += stok  # Menambahkan ke stok jika sudah ada stok bahan sebelumnya
             else:
@@ -163,7 +168,7 @@ class MainApp:
             self.update_tables()
             self.popup.destroy()
         except ValueError:
-            messagebox.showerror("Error", "Stok harus berupa angka positif!")
+            messagebox.showerror("Error", "Stok harus berupa angka dan merupakan bilangan positif!")
 
     # Membuat halaman untuk menambah menu
     def tambah_menu_page(self):
@@ -171,14 +176,17 @@ class MainApp:
         self.popup.title("Tambah Menu")
         self.popup.geometry("400x400")
 
+        # Membuat label untuk nama menu
         tk.Label(self.popup, text="Nama Menu", font=("Helvetica", 14)).place(x=50, y=50)
         self.entry_menu_nama = tk.Entry(self.popup, font=("Helvetica", 14))
         self.entry_menu_nama.place(x=180, y=50)
 
+        # Membuat label untuk nama bahan dan jumlah yang dibutuhkan
         tk.Label(self.popup, text="Bahan (format: nama1,jumlah1;nama2,jumlah2)", font=("Helvetica", 10)).place(x=50, y=100)
         self.entry_menu_bahan = tk.Entry(self.popup, font=("Helvetica", 14), width=30)
         self.entry_menu_bahan.place(x=50, y=140)
 
+        # Membuat button simpan
         tk.Button(self.popup, text="Simpan", font=("Helvetica", 14), command=self.simpan_menu).place(x=150, y=200)
 
     # Fungsi untuk menyimpan menu ke database
@@ -187,14 +195,14 @@ class MainApp:
         bahan_input = self.entry_menu_bahan.get()
         try:
             bahan = {}
-            for item in bahan_input.split(";"):
-                nama_bahan, jumlah = item.split(",")
-                bahan[nama_bahan.strip()] = int(jumlah.strip())  # Pastikan jumlah berbentuk angka
+            for item in bahan_input.split(";"):     #Sebagai pemisah antar bahan baku
+                nama_bahan, jumlah = item.split(",")    #Sebagai pemisah nama bahan baku dan jumlah
+                bahan[nama_bahan.strip()] = int(jumlah.strip())    # Pastikan jumlah berbentuk angka
             self.menu[nama] = bahan
             self.update_tables()
             self.popup.destroy()
         except ValueError:
-            messagebox.showerror("Error", "Jumlah bahan harus berupa angka!")
+            messagebox.showerror("Error", "Jumlah bahan harus berupa angka dan sesuai dengan format!")
 
     # Membuat halaman untuk memasak menu
     def masak_menu_page(self):
@@ -202,10 +210,12 @@ class MainApp:
         self.popup.title("Masak Menu")
         self.popup.geometry("400x300")
 
+        # Membuat label untuk memasukkan nama menu yang sudah terdaftar
         tk.Label(self.popup, text="Nama Menu", font=("Helvetica", 14)).place(x=50, y=50)
         self.entry_masak_menu = tk.Entry(self.popup, font=("Helvetica", 14))
         self.entry_masak_menu.place(x=180, y=50)
 
+        # Membuat button masak
         tk.Button(self.popup, text="Masak", font=("Helvetica", 14), command=self.masak_menu).place(x=150, y=150)
 
     # Fungsi agar mengurangi otomatis bahan jika ada menu yang dimasak
@@ -214,18 +224,25 @@ class MainApp:
         if nama_menu in self.menu:
             bahan_menu = self.menu[nama_menu]
             try:
+                # Cek bahan satu per satu untuk memastikan cukup
                 for bahan, jumlah in bahan_menu.items():
-                    if self.bahan_baku.get(bahan, 0) < jumlah:
-                        raise ValueError(f"Bahan {bahan} tidak mencukupi!")
+                    # Pastikan bahan ada dalam bahan baku, jika tidak ada, anggap 0
+                    bahan_tersedia = self.bahan_baku.get(bahan, 0)
+                    if bahan_tersedia < jumlah:
+                        raise ValueError(f"Bahan {bahan} tidak mencukupi! Tersedia {bahan_tersedia}, dibutuhkan {jumlah}.")
+                
+                # Jika semua bahan cukup, lakukan pengurangan
                 for bahan, jumlah in bahan_menu.items():
-                    self.bahan_baku[bahan] -= jumlah  # Pastikan pengurangan dilakukan pada angka
+                    self.bahan_baku[bahan] -= jumlah  # Pengurangan bahan baku
                 messagebox.showinfo("Success", f"Menu {nama_menu} berhasil dimasak!")
                 self.update_tables()
                 self.popup.destroy()
             except ValueError as e:
-                messagebox.showerror("Error", "Menu tidak ditemukan!")
+                # Menampilkan pesan error spesifik untuk bahan tidak mencukupi
+                messagebox.showerror("Error", str(e))  # Menampilkan pesan kesalahan yang lebih spesifik
         else:
-            messagebox.showerror("Error",  "Menu tidak ditemukan!")
+            messagebox.showerror("Error", "Menu tidak ditemukan!")
+
 
     # Fungsi agar ketika logout kembali ke homepage
     def logout(self):
@@ -233,7 +250,7 @@ class MainApp:
     
     # Fungsi agar ketika button close di klik program berakhir
     def close_program(self):
-        result = messagebox.askyesno("Konfirmasi", "Apakah Anda yakin ingin keluar?") # Mengonfirmasi pengguna
+        result = messagebox.askyesno("Konfirmasi", "Apakah Anda yakin ingin keluar?") # Mengonfirmasi ke pengguna
         if result:  
             self.apk.destroy()
 
