@@ -166,6 +166,7 @@ class MainApp:
             else:
                 self.bahan_baku[nama] = stok  # Menambahkan bahan baku baru
             self.update_tables()
+            messagebox.showinfo("Sukses", f"Bahan {nama} berhasil disimpan dengan stok {stok}!")
             self.popup.destroy()
         except ValueError:
             messagebox.showerror("Error", "Stok harus berupa angka dan merupakan bilangan positif!")
@@ -200,6 +201,7 @@ class MainApp:
                 bahan[nama_bahan.strip()] = int(jumlah.strip())    # Pastikan jumlah berbentuk angka
             self.menu[nama] = bahan
             self.update_tables()
+            messagebox.showinfo("Sukses", f"Menu {nama} berhasil disimpan!")
             self.popup.destroy()
         except ValueError:
             messagebox.showerror("Error", "Jumlah bahan harus berupa angka dan sesuai dengan format!")
